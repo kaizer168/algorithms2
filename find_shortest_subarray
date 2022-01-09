@@ -1,0 +1,44 @@
+class Solution {
+public:
+    int findShortestSubArray(vector<int>& nums) {
+        int degree = 0;
+        unordered_map<int, int> h;
+
+        for (int i : nums) {
+            if (h.find(i) == h.end()) {
+                h[i] = 1;
+            }
+            else {
+                h[i]++;
+            }
+        }
+
+        unordered_set<int> candidate;
+        for (auto it : h) {
+            if (it.second > degree) {
+                degree = it.second;
+                candidate.clear();
+                candidate.insert(it.first);
+            }
+            else if (it.second == degree) {
+                candidate.insert(it.first);
+            }
+        }
+
+        unordered_map<int, int> left, right;
+        for (int j = 0; j < nums.size(); j++) {
+            if (candidate.find(nums[j]) != candidate.end()) {
+                if (left.find(nums[j]) == left.end()) {
+                    left[nums[j]] = j-1;
+                }
+                right[nums[j]] = j;
+            }
+        }
+
+        int res = nums.size();
+        for (int k : candidate) {
+            res = min(res, right[k] - left[k]);
+        }
+        return res;
+    }
+};
