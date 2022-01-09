@@ -1,0 +1,48 @@
+class Solution {
+public:
+    vector<string> subdomainVisits(vector<string>& cpdomains) {
+        string delimiter = " ";
+        vector<string> count_domain = {};
+        vector<string> count_subdomain = {};
+        vector<string> domain = {};
+        vector<string> subdomain = {};
+        size_t pos = 0;
+
+        for (string s : cpdomains) {
+            while ((pos = s.find(delimiter)) != string::npos) {
+                count_domain.push_back(s.substr(0, pos));
+                s.erase(0, pos + delimiter.length());
+            }
+            domain.push_back(s);
+        }
+
+        delimiter = ".";
+         for (int i = 0; i < domain.size(); i++) {
+             subdomain.push_back(domain[i]);
+             count_subdomain.push_back(count_domain[i]);
+             while ((pos = domain[i].find(delimiter)) != string::npos) {
+                 subdomain.push_back(domain[i].substr(pos+1,domain[i].length()));
+                 count_subdomain.push_back(count_domain[i]);
+                 domain[i].erase(0, pos + delimiter.length());
+             }
+         }
+
+         for (int i = 0; i < subdomain.size(); i++) {
+             h[subdomain[i]] += stoi(count_subdomain[i]);
+         }
+
+         return printMap(h);
+    }
+    
+    vector<string> printMap(unordered_map<string, int>& h) {
+        vector<string> vec = {};
+        for (auto elem: h) {
+            vec.push_back(to_string(elem.second) + " " + elem.first);
+        }
+
+        return vec;
+    }
+
+private:
+    unordered_map<string, int> h;
+};
